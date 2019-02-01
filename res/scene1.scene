@@ -1,0 +1,7 @@
+;;; non-euclidean geometry raytracer scene
+
+camera: p=(0 0 0) fov=90°
+
+sphere: p=(-4   7  27) r= 2
+sphere: p=( 3   4  41) r= 4.5
+sphere: p=(10 -14  50) r=20

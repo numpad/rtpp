@@ -1,21 +1,14 @@
 #include "ImageFramebuffer.hpp"
 
 ImageFramebuffer::ImageFramebuffer(int w, int h)
-	: width(w), height(h)
+	: Framebuffer(w, h)
 {
 	this->pixels = (unsigned char *)malloc(w * h * 3 * sizeof(unsigned char));
 }
 
 ImageFramebuffer::~ImageFramebuffer() {
 	free(this->pixels);
-}
-
-int ImageFramebuffer::get_width() {
-	return this->width;
-}
-
-int ImageFramebuffer::get_height() {
-	return this->height;
+	this->pixels = nullptr;
 }
 
 void ImageFramebuffer::set_pixel(int x, int y, unsigned char r, unsigned char g, unsigned char b) {

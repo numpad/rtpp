@@ -1,6 +1,6 @@
 CXX=g++ -std=c++11
 CXXFLAGS=-Wall -pedantic
-LDFLAGS=-Ilib/ -Isrc/include/
+LDFLAGS=-O3 -ffast-math -Ilib/ -Isrc/include/
 LDLIBS=-lm
 
 SRCS=$(shell find src/source/ -name "*.cpp")
