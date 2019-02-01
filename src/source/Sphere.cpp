@@ -1,13 +1,17 @@
 #include "Sphere.hpp"
 
+#define RAND_FLOAT ((float)rand() / (float)RAND_MAX)
+#define RAND_MIX(r) ((RAND_FLOAT + r) * 0.5f)
+
 Sphere::Sphere(Vec3 p, float r)
-	: pos(p), radius(r)
+	: material(Material()), pos(p), radius(r)
 {
-	
+	this->material.set_diffuse(
+		Vec3(RAND_MIX(1.0f), RAND_MIX(1.0f), RAND_MIX(1.0f))
+	);
 }
 
 RayHit Sphere::intersects(const Ray &ray) {
-	
 	/* from ray origin to sphere */
 	Vec3 vpc = Vec3::normal(this->pos - ray.pos);
 	
@@ -47,4 +51,8 @@ RayHit Sphere::intersects(const Ray &ray) {
 	}
 
 	return RayHit();
+}
+
+Material Sphere::get_material() {
+	return this->material;
 }

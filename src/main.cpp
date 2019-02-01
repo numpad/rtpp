@@ -1,6 +1,7 @@
 #include <stdio.h>
-#include <vector>
 #include <float.h>
+#include <time.h>
+#include <vector>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb/stb_image_write.h>
@@ -14,12 +15,15 @@
 #include "RayHit.hpp"
 
 int main() {
+	srand(time(nullptr));
 	
 	std::vector<Collidable *> objects;
-	objects.push_back(new Sphere(Vec3(0.0f,  0.0f, 50.0f), 20.0f));
+	objects.push_back(new Sphere(Vec3(3.0f,   4.0f, 31.0f),  4.5f));
+	objects.push_back(new Sphere(Vec3(10.0f, -14.0f, 50.0f), 20.0f));
 	
-	ImageFramebuffer image(800, 600);
-	Vec3 light_pos(-7.5f, 15.0f, 35.0f);
+	float scale = 0.8f;
+	ImageFramebuffer image(1920 * scale, 1080 * scale);
+	Vec3 light_pos(-20.5f, 25.0f, 15.0f);
 	Vec3 cam_pos;
 	const float fov = 3.1415926f * 0.5f;
 	for (int y = 0; y < image.get_height(); ++y) {
@@ -33,9 +37,17 @@ int main() {
 			if (!rh.hit) { image.set_pixel(x, y, 33, 33, 33); continue; }
 			
 			/* light */
-			float illu = fmaxf(0.0f, rh.n.dot((light_pos - rh.p).normal()));
+			Vec3 to_light = (light_pos - rh.p).normal();
+			Ray shadow_ray(rh.p + to_light * 0.05f, to_light);
+			RayHit srh = shadow_ray.intersect(objects);
 			
-			Vec3 px(illu * 255.0f);
+			const float ambient = 0.175f;
+			float occluded = 1.0f;
+			if (srh.hit) occluded = 0.0f;
+			
+			float illu = fmaxf(ambient, occluded * rh.n.dot((light_pos - rh.p).normal()));
+			Sphere *sph = (Sphere *)rh.get_collider();
+			Vec3 px(sph->get_material().get_diffuse() * illu * 255.0f);
 			
 			image.set_pixel(x, y, px.x, px.y, px.z);
 		
